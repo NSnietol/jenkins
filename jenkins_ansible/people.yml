@@ -1,0 +1,7 @@
+- hosts: server-web
+  tasks:
+    - name : Filtrar informacion
+      template:
+        src: 
+        dest: /var/www/html
+

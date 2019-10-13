@@ -1,0 +1,50 @@
+
+job('mave-job-dsl') {
+
+    description('mave-job-dsl')
+
+  
+    parameters {
+
+        choiceParam('branch', ['master', 'dev'])
+    }
+
+    scm {
+
+      	git{
+      		
+          remote{
+          
+          	url('http://git/udemy/maven.git')
+            branch('*/$branch')
+            credentials('7dfb7a18-ee9f-4a7c-8cc3-3bfb13336584')
+          
+          }  
+      }
+    			
+    }
+
+
+     
+    steps {
+        maven {
+            mavenInstallation('jenkis-maven')
+            goals('-B -DskipTests clean package')
+        }
+        maven {
+            mavenInstallation('jenkis-maven')
+            goals('test')
+        }
+        shell('''
+            echo ************RUNNING THE JAR************************     
+            java -jar /var/jenkins_home/workspace/mave-job-dsl/target/my-app-1.0-SNAPSHOT.jar
+        ''')
+    }
+  
+   publishers {
+        archiveArtifacts('target/*.jar')
+        archiveJunit('target/surefire-reports/*.xml')
+
+    }
+
+}

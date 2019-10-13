@@ -1,0 +1,60 @@
+freeStyleJob("SDL-Example") {
+
+  displayName("SDL test ;) ")
+
+	parameters{
+    
+      booleanParam {
+        name("Check Output?")
+        description("checking ")
+        defaultValue(true)
+      }
+    
+      stringParam {
+        name("name")
+        defaultValue("user")
+        description("author ")
+        trim(true)
+      }
+      
+      choiceParam {
+        name("branch")
+        description("Branch")
+        choices(['master','dev','test 3'])
+      }
+    
+	}
+
+    environmentVariables {
+        
+    	env("Author", "NS")
+       
+    }
+  
+    scm {
+      
+      	
+      	git{
+      		
+          remote{
+          
+          	url('http://git/udemy/maven.git')
+            branch('*/$branch')
+            credentials('7dfb7a18-ee9f-4a7c-8cc3-3bfb13336584')
+          
+          }  
+      }
+    			
+    }
+  
+    triggers {
+        cron('H 5 * * 7')
+    }
+  
+  
+	steps {
+      shell('echo $branch')
+	}
+ 
+  
+}

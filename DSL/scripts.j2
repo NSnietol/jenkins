@@ -1,0 +1,153 @@
+
+freeStyleJob("SDL-Example") {
+
+  displayName("SDL test ;) ")
+
+	parameters{
+    
+      booleanParam {
+        name("Check Output?")
+        description("checking ")
+        defaultValue(true)
+      }
+    
+      stringParam {
+        name("name")
+        defaultValue("user")
+        description("author ")
+        trim(true)
+      }
+      
+      choiceParam {
+        name("branch")
+        description("Branch")
+        choices(['master','dev','test 3'])
+      }
+    
+	}
+
+    environmentVariables {
+        
+    	env("Author", "NS")
+       
+    }
+  
+    scm {
+      
+      	
+      	git{
+      		
+          remote{
+          
+          	url('http://git/udemy/maven.git')
+            branch('*/$branch')
+            credentials('7dfb7a18-ee9f-4a7c-8cc3-3bfb13336584')
+          
+          }  
+      }
+    			
+    }
+  
+    triggers {
+        cron('H 5 * * 7')
+    }
+  
+  
+	steps {
+      shell('echo $branch')
+	}
+ 
+  
+}
+
+
+
+job('job_ansible_dsl') {
+
+    description('This is my awesome Job')
+
+  
+    parameters {
+        stringParam('USER', defaultValue = 'nsroot', description = ' ')
+	
+ 
+           credentialsParam("PASSWORD") 
+
+         stringParam('HOST', defaultValue = 'db', description = ' ')
+   
+     }
+
+
+
+    steps {
+
+        wrappers {
+            colorizeOutput(colorMap = 'xterm')
+      }
+        ansiblePlaybook('/var/jenkins_home/ansible/play.yml') {
+            inventoryPath('/var/jenkins_home/ansible/hosts')
+            tags('exec')
+
+            colorizedOutput(true)
+            extraVars {
+                extraVar("PASSWORD", '${PASSWORD}', false)
+                extraVar("HOST", '${HOST}', false)
+                extraVar("USER", '${USER}', false)
+
+            }
+        }
+    }
+
+}
+
+
+
+job('mave-job-dsl') {
+
+    description('mave-job-dsl')
+
+  
+    parameters {
+
+        choiceParam('branch', ['master', 'dev'])
+    }
+
+    scm {
+
+      	git{
+      		
+          remote{
+          
+          	url('http://git/udemy/maven.git')
+            branch('*/$branch')
+            credentials('7dfb7a18-ee9f-4a7c-8cc3-3bfb13336584')
+          
+          }  
+      }
+    			
+    }
+
+
+     
+    steps {
+        maven {
+            mavenInstallation('jenkis-maven')
+            goals('-B -DskipTests clean package')
+        }
+        maven {
+            mavenInstallation('jenkis-maven')
+            goals('test')
+        }
+        shell('''
+            echo ************RUNNING THE JAR************************     
+            java -jar /var/jenkins_home/workspace/mave-job-dsl/target/my-app-1.0-SNAPSHOT.jar
+        ''')
+    }
+  
+   publishers {
+        archiveArtifacts('target/*.jar')
+        archiveJunit('target/surefire-reports/*.xml')
+
+    }
+
+}

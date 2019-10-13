@@ -1,0 +1,24 @@
+- hosts: test1
+  tasks:
+
+    - shell: echo Hola Mundo desde Ansible {{USER}}  > /tmp/hola-ansible
+      tags: shell-test
+
+
+    - shell: /bin/sh /tmp/names.sh {{USER}} {{PASSWORD}} {{HOST}}
+      name: Test bash
+      tags: exec
+
+
+    - name: "Insert new record"
+      command: /tmp/names.sh {{USER}} {{PASSWORD}} {{HOST}}
+      tags: exec1
+
+    - debug:
+        var: message
+      tags: test
+         
+
+    - debug:
+        msg: "Yo no me voy a ejecutar :("
+      tags: no-exec
