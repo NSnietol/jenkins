@@ -46,6 +46,10 @@ Role-based Authorization Strategy
 
 Puedes crear variables que seran visibles para todos los jobs  en el apartado de configuracion general-> Environment variables 
 
+## Ejecuciones periodicas
+Este es un refente que permite crear el cron de forma explicita.
+https://crontab.guru/
+
 # Pipeline
 
 Workflow por el que debe pasar el codigo para ser entregado con un control de 
